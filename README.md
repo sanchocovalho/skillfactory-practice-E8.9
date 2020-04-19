@@ -30,3 +30,4 @@
    - docker-machine ip default
 5) Запустите сборку docker-проекта:
    - docker-compose up --build
+Сервис откроется по IP-адресу виртуальной машины с 5000 портом.
