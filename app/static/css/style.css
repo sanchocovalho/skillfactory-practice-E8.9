@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'Consolas';
+    src: url('../font/consolas.ttf') format('truetype');
+}
+* {
+    font-family: "Consolas", sans-serif;
+    padding: 0;
+    margin: 0;
+}
+body {
+    background: #1b374f;
+    min-height: 100vh;
+}
+.header {
+    background: #031321;
+    padding: 10px 15px;
+    border: 1px solid #5d02ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.container {
+    background: #031321;
+    min-height: calc(100vh - 64px);
+}
+.user-box {
+    color: #e91e63;
+    font-weight: 800;
+    margin: 40px 0;
+    width: 100%;
+}
+.title {
+    text-align: center;
+    margin: 15px 0;
+}
+.form-box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.input-box {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 46px;
+    background: #031321;
+    border: 2px solid #5d02ff;
+    padding: 10px 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #e91e63;
+    outline: none;
+    margin: 25px 0;
+    border-radius: 6px;
+    text-align: center;
+}
+.input-box::placeholder {
+    color: #5d02ff;
+}
+.result-btn,
+.calc-btn {
+    display: inline-block;
+    width: 200px;
+    height: 40px;
+    background: #031321;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #5d02ff;
+    overflow: hidden;
+    border: 2px solid #5d02ff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.result-btn:hover,
+.calc-btn:hover {
+    color: #e91e63;
+    background: #5d02ff;
+    box-shadow: 0 0 5px #5d02ff, 0 0 15px #5d02ff;
+    border: 0;
+}
+.error-box {
+    width: 100%;
+    margin: 25px 0;
+    text-align: center;
+    font-size: 28px;
+    color: #e91e63;
+}

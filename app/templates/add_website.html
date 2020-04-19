@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Сервис подсчёта слова "python" на веб-страницах{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+{% block content %}
+    <header class="container-fluid header">
+        <form action="/results">
+            <button class="result-btn">Результаты</button>
+        </form>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm d-flex flex-column align-items-center user-box">
+                <h2 class="title">Сервис подсчёта слова "python" на веб-страницах</h2>
+                <h5 class="title">Введите адрес веб-страницы для анализа (длина 300 символов):</h5>
+                <form class="form-box" method="POST" action="/">
+                    {{ form.csrf_token }}
+                    <input class="input-box" id="address" name="address" type="text" autofocus="" placeholder="Введите адрес веб-страницы для анализа">
+                    <button class="calc-btn" type="submit">Подсчитать</button>
+                </form>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="error-box">{{ message[1] }}</div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}

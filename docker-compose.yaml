@@ -1,0 +1,88 @@
+version: '3.7'
+services:
+    flask:
+        build: .
+        command: gunicorn -b 0.0.0.0:5000 app:app
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/usr/src/app/
+        environment:
+            - HOST='0.0.0.0'
+            - PORT=5000
+            - DATABASE_URL=postgresql+psycopg2://postgres:password@postgres:5432/parsing_webpages
+            - SECRET_KEY=om0y9edo1sa6sawwh056phw7hiow8govb7s8ru33ysg50vx37f
+            - CELERY_BROKER_URL=redis://redis:6379/1
+            - CELERY_RESULT_BACKEND=redis://redis:6379/1
+            - NSQTCP_ADDRESS=nsqd:4150
+            - NSQHTTP_ADDRESS=nsqd:4151
+            - NSQ_TOPIC=MY_TOPIC
+            - NSQ_CHANNEL=MY_CHANNEL
+        depends_on:
+            - postgres
+            - redis
+            - nsqd
+    postgres:
+        image: postgres:12-alpine
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=parsing_webpages
+    redis:
+        image: redis:5.0.7
+        restart: always
+        ports:
+            - "6379:6379"
+    celery:
+        build: .
+        restart: always
+        command: celery -A app.celery worker
+        environment:
+            - HOST='0.0.0.0'
+            - PORT=5000
+            - DATABASE_URL=postgresql+psycopg2://postgres:password@postgres:5432/parsing_webpages
+            - SECRET_KEY=om0y9edo1sa6sawwh056phw7hiow8govb7s8ru33ysg50vx37f
+            - CELERY_BROKER_URL=redis://redis:6379/1
+            - CELERY_RESULT_BACKEND=redis://redis:6379/1
+            - NSQTCP_ADDRESS=nsqd:4150
+            - NSQHTTP_ADDRESS=nsqd:4151
+            - NSQ_TOPIC=MY_TOPIC
+            - NSQ_CHANNEL=MY_CHANNEL
+        depends_on:
+            - postgres
+            - redis
+            - flask
+            - nsqd
+    nsqreader:
+        build: .
+        command: python app/nsq_reader.py
+        environment:
+            - NSQTCP_ADDRESS=nsqd:4150
+            - NSQ_TOPIC=MY_TOPIC
+            - NSQ_CHANNEL=MY_CHANNEL
+        depends_on:
+            - nsqd
+    nsqlookupd:
+        image: nsqio/nsq
+        command: /nsqlookupd
+        ports:
+            - "4160:4160"
+            - "4161:4161"
+    nsqd:
+        image: nsqio/nsq
+        command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+        depends_on:
+            - nsqlookupd
+        ports:
+            - "4150:4150"
+            - "4151:4151"
+    nsqadmin:
+        image: nsqio/nsq
+        command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+        depends_on:
+            - nsqlookupd  
+        ports:
+            - "4171:4171"
